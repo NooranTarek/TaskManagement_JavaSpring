@@ -31,5 +31,17 @@ public class TaskController {
         Task updatedTask=taskService.updateTask(id,task);
         return updatedTask!=null?new ApiResponse<>("task updated successfully",updatedTask):new ApiResponse<>("task  can not be updated",null);
     }
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> deleteTask(@PathVariable Integer id){
+        boolean deletedTask=taskService.deleteTask(id);
+        if(deletedTask){
+            return new ApiResponse<>("task deleted successfully",null);
+
+        }
+        else {
+            return new ApiResponse<>("task not exist to be deleted",null);
+
+        }
+    }
 
 }
