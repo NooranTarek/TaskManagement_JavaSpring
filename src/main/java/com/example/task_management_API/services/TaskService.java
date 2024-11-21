@@ -19,5 +19,12 @@ public class TaskService {
     public List<Task> getAllTasks (){
         return taskRepository.findAll();
     }
+    public Task updateTask(Integer id,Task task){
+        if (taskRepository.existsById(id)) {
+            task.setId(id);
+            return taskRepository.save(task);
+        }
+        return null;
+    }
 
 }

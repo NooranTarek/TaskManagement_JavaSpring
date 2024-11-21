@@ -11,5 +11,8 @@ public class ApiResponse <T>{
         this.message = message;
         this.data = data;
     }
-
+    public ApiResponse(String message) {
+        this.message = message;
+        this.data = null;
+    }
 }

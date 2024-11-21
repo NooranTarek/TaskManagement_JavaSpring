@@ -26,5 +26,10 @@ public class TaskController {
         return new ApiResponse<>("tasks showed successfully",allTasks);
 
     }
+    @PutMapping("/{id}")
+    public ApiResponse<Task> updateSpesificTask(@PathVariable Integer id , @RequestBody Task task){
+        Task updatedTask=taskService.updateTask(id,task);
+        return updatedTask!=null?new ApiResponse<>("task updated successfully",updatedTask):new ApiResponse<>("task  can not be updated",null);
+    }
 
 }
