@@ -12,11 +12,12 @@ import java.util.List;
 public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
-
+    //CRUD
     public Task createTask (Task task){
         return taskRepository.save(task);
     }
     public List<Task> getAllTasks (){
         return taskRepository.findAll();
     }
+
 }

@@ -1,8 +1,8 @@
 package com.example.task_management_API.controllers;
 
+import com.example.task_management_API.Helpers.ApiResponse;
 import com.example.task_management_API.models.Task;
 import com.example.task_management_API.services.TaskService;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +16,15 @@ public class TaskController {
     private TaskService taskService;
 
     @PostMapping("")
-    public Task createTask (@RequestBody Task task){
-        return taskService.createTask(task);
+    public ApiResponse<Task> createTask (@RequestBody Task task){
+        Task savedTask=taskService.createTask(task);
+        return new ApiResponse<>("tasks added successfully",savedTask);
  }
     @GetMapping("")
-    public List<Task> getAllTasks() {
-        return taskService.getAllTasks();
+    public ApiResponse<List<Task>> getAllTasks() {
+        List<Task> allTasks=taskService.getAllTasks();
+        return new ApiResponse<>("tasks showed successfully",allTasks);
+
     }
 
 }
