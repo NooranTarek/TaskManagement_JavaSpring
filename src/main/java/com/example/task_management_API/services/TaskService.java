@@ -1,7 +1,7 @@
 package com.example.task_management_API.services;
 
-import com.example.task_management_API.models.Task;
-import com.example.task_management_API.repos.TaskRepository;
+import com.example.task_management_API.entities.Task;
+import com.example.task_management_API.repositories.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

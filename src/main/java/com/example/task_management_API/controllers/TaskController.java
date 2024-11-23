@@ -1,7 +1,7 @@
 package com.example.task_management_API.controllers;
 
 import com.example.task_management_API.Helpers.ApiResponse;
-import com.example.task_management_API.models.Task;
+import com.example.task_management_API.entities.Task;
 import com.example.task_management_API.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
+@CrossOrigin(origins = "http://localhost:4200")
 public class TaskController {
     @Autowired
     private TaskService taskService;
@@ -23,7 +24,7 @@ public class TaskController {
     @GetMapping("")
     public ApiResponse<List<Task>> getAllTasks() {
         List<Task> allTasks=taskService.getAllTasks();
-        return new ApiResponse<>("tasks showed successfully",allTasks);
+        return new ApiResponse<>("your tasks showed successfully",allTasks);
 
     }
     @PutMapping("/{id}")

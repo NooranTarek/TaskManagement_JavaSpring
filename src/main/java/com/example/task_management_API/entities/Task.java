@@ -1,4 +1,4 @@
-package com.example.task_management_API.models;
+package com.example.task_management_API.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
