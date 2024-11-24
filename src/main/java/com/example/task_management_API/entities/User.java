@@ -3,15 +3,18 @@ package com.example.task_management_API.entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
 @Entity
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "users")
-public class User {
+public class User  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -29,6 +32,5 @@ public class User {
     }
     @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,orphanRemoval = true)
     private List <Task> tasks;
-
 
 }
