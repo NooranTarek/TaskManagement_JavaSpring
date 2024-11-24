@@ -20,6 +20,10 @@ public class Task {
     private Status status;
     @Enumerated(EnumType.STRING)
     private Periority periority;
+    @ManyToOne
+    @JoinColumn(name = "user_id")//foriegn
+    private User user;
+
     public enum Status{
         to_do,
         in_progress,
@@ -30,5 +34,4 @@ public class Task {
         medium,
         high
     }
-
 }
