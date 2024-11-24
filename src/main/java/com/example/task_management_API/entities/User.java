@@ -1,6 +1,7 @@
 package com.example.task_management_API.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Data
+@AllArgsConstructor
 @Table(name = "users")
 public class User {
     @Id
@@ -15,6 +17,7 @@ public class User {
     private Integer id;
     private String firstName;
     private String lastName;
+    private String username;
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)

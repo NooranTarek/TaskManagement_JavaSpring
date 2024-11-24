@@ -1,11 +1,13 @@
 package com.example.task_management_API.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
 @Entity
 @Table(name = "tasks")
 public class Task {
