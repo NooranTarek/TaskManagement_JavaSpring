@@ -5,6 +5,9 @@ import com.example.task_management_API.entities.User;
 import com.example.task_management_API.services.UserService;
 import com.example.task_management_API.utilities.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,30 +25,32 @@ public class AuthController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @PostMapping("/register")
-    public ApiResponse<User> registerUser (@RequestBody User user){
-        Optional<User> existUser=userService.findByUserName(user.getUsername());
-        if(existUser.isPresent()){
-            return new ApiResponse<>("user already exist with this name");
+    public ResponseEntity<ApiResponse<User>> registerUser(@RequestBody User user) {
+        try {
+            User registeredUser = userService.registerUser(user);
+            ApiResponse<User> response = new ApiResponse<>("User registered successfully", registeredUser);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (DataIntegrityViolationException e) {
+            ApiResponse<User> errorResponse = new ApiResponse<>("Username or Email already exists", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
-        else {
-            User registeredUser=userService.registerUser(user);
-            return new ApiResponse<>("user registered successfully",registeredUser);
-        }
-
     }
+
     @PostMapping("/login")
-    public ApiResponse<String> login(@RequestBody User loginData){
-        Optional<User> userExist=userService.findByUserName(loginData.getUsername());
-        if (userExist.isPresent()){
-            User user =userExist.get();
-            if(passwordEncoder.matches(loginData.getPassword(),user.getPassword())){
-                String token=jwtUtil.generateToken(user.getUsername(),user.getRole().name());
-                return new ApiResponse<>("login successfully",token);
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody User loginData) {
+        Optional<User> userExist = userService.findByUserName(loginData.getUsername());
+        if (userExist.isPresent()) {
+            User user = userExist.get();
+            if (passwordEncoder.matches(loginData.getPassword(), user.getPassword())) {
+                String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
+                ApiResponse<String> successResponse = new ApiResponse<>("Login successful", token);
+                return ResponseEntity.status(HttpStatus.OK).body(successResponse);
             }
-
         }
-        return new ApiResponse<>("failed to login");
-
+        ApiResponse<String> errorResponse = new ApiResponse<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
+
 }
