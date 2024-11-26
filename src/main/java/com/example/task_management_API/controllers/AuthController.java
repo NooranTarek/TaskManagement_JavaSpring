@@ -44,7 +44,7 @@ public class AuthController {
         if (userExist.isPresent()) {
             User user = userExist.get();
             if (passwordEncoder.matches(loginData.getPassword(), user.getPassword())) {
-                String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
+                String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name(),user.getId());
                 ApiResponse<String> successResponse = new ApiResponse<>("Login successful", token);
                 return ResponseEntity.status(HttpStatus.OK).body(successResponse);
             }
