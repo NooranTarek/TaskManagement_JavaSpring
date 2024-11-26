@@ -32,7 +32,7 @@ public class User  {
         admin,
         user
     }
-    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
     private List <Task> tasks;
 
 }

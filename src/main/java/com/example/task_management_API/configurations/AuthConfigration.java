@@ -14,6 +14,7 @@ public class AuthConfigration {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/register", "/auth/login").permitAll()
+//                        .requestMatchers("/tasks").authenticated());
                                 .anyRequest().permitAll());
 //                        .anyRequest().authenticated());
         return http.build();

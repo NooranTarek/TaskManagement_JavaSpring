@@ -32,6 +32,13 @@ public class JwtUtil {
                 .getBody()
                 .getSubject();
     }
+    public Integer extractUserId(String token){
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody()
+                .get("id", Integer.class);
+    }
     public String extractRole(String token){
         return Jwts.parser()
                 .setSigningKey(secretKey)
