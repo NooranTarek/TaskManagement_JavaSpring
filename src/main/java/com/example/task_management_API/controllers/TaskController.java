@@ -10,6 +10,7 @@ import com.example.task_management_API.utilities.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.http.HttpHeaders;
@@ -28,23 +29,19 @@ private JwtUtil jwtUtil;
 
 
     @PostMapping("")
-    public ResponseEntity<ApiResponse<TaskDto>> createTask (@RequestBody Task task, @RequestHeader("Authorization") String token){
-        try{
-            System.out.println("hello");
-            token = token.replace("Bearer ", "");
-            Integer userId= jwtUtil.extractUserId(token);
-            User userOfId= userService.findUserById(userId);
-            task.setUser(userOfId);
-            Task savedTask=taskService.createTask(task);
-            TaskDto taskDto=new TaskDto(savedTask);
-            ApiResponse<TaskDto> successResponse = new ApiResponse<>("task added successfully", taskDto,HttpStatus.CREATED);
+    public ResponseEntity<ApiResponse<TaskDto>> createTask(@RequestBody Task task) {
+        try {
+            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            task.setUser(user);
+            Task savedTask = taskService.createTask(task);
+            TaskDto taskDto = new TaskDto(savedTask);
+            ApiResponse<TaskDto> successResponse = new ApiResponse<>("task added successfully", taskDto, HttpStatus.CREATED);
             return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
-        }catch (RuntimeException e){
-            ApiResponse<TaskDto> errorResponse=new ApiResponse<>(e.getMessage(),HttpStatus.NOT_FOUND);
+        } catch (RuntimeException e) {
+            ApiResponse<TaskDto> errorResponse = new ApiResponse<>(e.getMessage(), HttpStatus.NOT_FOUND);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
-
- }
+    }
 
 //    @PostMapping("")
 //    public ApiResponse<Task> createTask(

@@ -3,6 +3,7 @@ package com.example.task_management_API.services;
 import com.example.task_management_API.entities.User;
 import com.example.task_management_API.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +18,7 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
+    @Lazy
     private PasswordEncoder passwordEncoder;
 
     public User registerUser(User user){

@@ -23,7 +23,7 @@ public class UserController {
         try{
             User userExist=userService.findUserById(id);
             UserDto userDto = new UserDto(userExist);
-            ApiResponse<UserDto> userExistResponse=new ApiResponse<>("user found successfully",userDto, HttpStatus.FOUND);
+            ApiResponse<UserDto> userExistResponse=new ApiResponse<>("you account is exist",userDto, HttpStatus.FOUND);
             return ResponseEntity.status(HttpStatus.FOUND).body(userExistResponse);
         }catch(RuntimeException e){
             ApiResponse<UserDto> userNotExistResponse=new ApiResponse<>("user not found", HttpStatus.NOT_FOUND);
