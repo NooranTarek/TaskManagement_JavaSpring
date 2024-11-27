@@ -7,37 +7,39 @@ import com.example.task_management_API.entities.User;
 import com.example.task_management_API.services.TaskService;
 import com.example.task_management_API.services.UserService;
 import com.example.task_management_API.utilities.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.http.HttpHeaders;
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/tasks")
+@Slf4j
 public class TaskController {
+
     @Autowired
     private TaskService taskService;
-@Autowired
-private UserService userService;
-@Autowired
-private JwtUtil jwtUtil;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private JwtUtil jwtUtil;
 
 
     @PostMapping("")
     public ResponseEntity<ApiResponse<TaskDto>> createTask(@RequestBody Task task) {
         try {
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            System.out.println("user in task: " + user);
             task.setUser(user);
             Task savedTask = taskService.createTask(task);
             TaskDto taskDto = new TaskDto(savedTask);
             ApiResponse<TaskDto> successResponse = new ApiResponse<>("task added successfully", taskDto, HttpStatus.CREATED);
             return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
         } catch (RuntimeException e) {
+            System.out.println("error");
             ApiResponse<TaskDto> errorResponse = new ApiResponse<>(e.getMessage(), HttpStatus.NOT_FOUND);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
@@ -72,9 +74,12 @@ private JwtUtil jwtUtil;
         return new ApiResponse<>("your tasks showed successfully",allTasks);
 
     }
-    @GetMapping("{id}")
-    public ResponseEntity<ApiResponse<List<TaskDto>>> getUserTasks(@PathVariable Integer id) {
-        List<TaskDto> allTasks=taskService.getUserTasks(id);
+    @GetMapping("/userTasks")
+    public ResponseEntity<ApiResponse<List<TaskDto>>> getUserTasks() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer userId = user.getId();
+        System.out.println("from tasks");
+        List<TaskDto> allTasks=taskService.getUserTasks(userId);
         ApiResponse<List<TaskDto>> response= new ApiResponse<>("your tasks showed successfully",allTasks,HttpStatus.OK);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
