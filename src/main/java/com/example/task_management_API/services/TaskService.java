@@ -1,11 +1,13 @@
 package com.example.task_management_API.services;
 
+import com.example.task_management_API.DTO.TaskDto;
 import com.example.task_management_API.entities.Task;
 import com.example.task_management_API.repositories.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -32,6 +34,11 @@ public class TaskService {
             return true;
         }
         return false;
+    }
+    public List<TaskDto> getUserTasks(Integer id){
+        List<Task> tasks=taskRepository.findByUserId(id);
+        return tasks.stream().map(TaskDto::new).collect(Collectors.toList());
+
     }
 
 }

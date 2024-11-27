@@ -26,34 +26,44 @@ public class AuthMiddleware extends OncePerRequestFilter {
         this.jwtUtil = jwtUtil;
         this.userService = userService;
     }
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         if (request.getRequestURI().startsWith("/auth/")) {
             filterChain.doFilter(request, response);
-            return; }
-        String token = request.getHeader("Authorization");
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.replace("Bearer ", "");
-            Integer userId = jwtUtil.extractUserId(token);
-            if (userId != null) {
-                User user = userService.findUserById(userId);
-                if (user != null) {
-                    var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                }
-            }
+            return;
         }
-        else {
+
+        String token = request.getHeader("Authorization");
+
+        if (token == null || !token.startsWith("Bearer ")) {
             ApiResponse<String> apiResponse = new ApiResponse<>("You must log in first", HttpStatus.UNAUTHORIZED);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.getWriter().write(new ObjectMapper().writeValueAsString(apiResponse));
             return;
         }
+        token = token.replace("Bearer ", "");
+        try {
+            boolean tokenExpired = jwtUtil.validateToken(token, jwtUtil.extractUserName(token));
+        } catch (Exception e) {
+            ApiResponse<String> apiResponse = new ApiResponse<>("Token EXPIRED", HttpStatus.BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("application/json");
+            response.getWriter().write(new ObjectMapper().writeValueAsString(apiResponse));
+            return;
+        }
+        Integer userId = jwtUtil.extractUserId(token);
+        if (userId != null) {
+            User user = userService.findUserById(userId);
+            if (user != null) {
+                var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }
         filterChain.doFilter(request, response);
-
     }
 
     @Override

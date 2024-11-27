@@ -72,6 +72,13 @@ private JwtUtil jwtUtil;
         return new ApiResponse<>("your tasks showed successfully",allTasks);
 
     }
+    @GetMapping("{id}")
+    public ResponseEntity<ApiResponse<List<TaskDto>>> getUserTasks(@PathVariable Integer id) {
+        List<TaskDto> allTasks=taskService.getUserTasks(id);
+        ApiResponse<List<TaskDto>> response= new ApiResponse<>("your tasks showed successfully",allTasks,HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @PutMapping("/{id}")
     public ApiResponse<Task> updateSpesificTask(@PathVariable Integer id , @RequestBody Task task){
         Task updatedTask=taskService.updateTask(id,task);
