@@ -85,15 +85,16 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Task>> updateSpesificTask(@PathVariable Integer id , @RequestBody Task task){
+    public ResponseEntity<ApiResponse<TaskDto>> updateSpesificTask(@PathVariable Integer id , @RequestBody Task task){
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Task updatedTask=taskService.updateTask(id,task,user);
         if(updatedTask!=null){
-            ApiResponse<Task> updateResponse=new ApiResponse<>("task updated successfully",updatedTask,HttpStatus.OK);
+            TaskDto taskDto = new TaskDto(updatedTask);
+            ApiResponse<TaskDto> updateResponse=new ApiResponse<>("task updated successfully",taskDto,HttpStatus.OK);
             return ResponseEntity.status(HttpStatus.OK).body(updateResponse);
         }
         else {
-            ApiResponse<Task> updateResponse=new ApiResponse<>("task not found to be updated",HttpStatus.NOT_FOUND);
+            ApiResponse<TaskDto> updateResponse=new ApiResponse<>("task not found to be updated",HttpStatus.NOT_FOUND);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(updateResponse);
         }
     }
