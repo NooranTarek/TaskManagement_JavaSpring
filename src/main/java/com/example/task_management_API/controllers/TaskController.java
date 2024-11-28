@@ -85,9 +85,17 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<Task> updateSpesificTask(@PathVariable Integer id , @RequestBody Task task){
-        Task updatedTask=taskService.updateTask(id,task);
-        return updatedTask!=null?new ApiResponse<>("task updated successfully",updatedTask):new ApiResponse<>("task  can not be updated",null);
+    public ResponseEntity<ApiResponse<Task>> updateSpesificTask(@PathVariable Integer id , @RequestBody Task task){
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Task updatedTask=taskService.updateTask(id,task,user);
+        if(updatedTask!=null){
+            ApiResponse<Task> updateResponse=new ApiResponse<>("task updated successfully",updatedTask,HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.OK).body(updateResponse);
+        }
+        else {
+            ApiResponse<Task> updateResponse=new ApiResponse<>("task not found to be updated",HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(updateResponse);
+        }
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteTask(@PathVariable Integer id) {

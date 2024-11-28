@@ -2,6 +2,7 @@ package com.example.task_management_API.services;
 
 import com.example.task_management_API.DTO.TaskDto;
 import com.example.task_management_API.entities.Task;
+import com.example.task_management_API.entities.User;
 import com.example.task_management_API.repositories.TaskRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,10 @@ public class TaskService {
     public List<Task> getAllTasks (){
         return taskRepository.findAll();
     }
-    public Task updateTask(Integer id,Task task){
+    public Task updateTask(Integer id, Task task, User user){
         if (taskRepository.existsById(id)) {
             task.setId(id);
+            task.setUser(user);
             return taskRepository.save(task);
         }
         return null;
