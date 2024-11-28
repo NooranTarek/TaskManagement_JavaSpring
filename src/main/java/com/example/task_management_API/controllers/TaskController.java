@@ -90,16 +90,17 @@ public class TaskController {
         return updatedTask!=null?new ApiResponse<>("task updated successfully",updatedTask):new ApiResponse<>("task  can not be updated",null);
     }
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteTask(@PathVariable Integer id){
-        boolean deletedTask=taskService.deleteTask(id);
-        if(deletedTask){
-            return new ApiResponse<>("task deleted successfully",null);
-
-        }
-        else {
-            return new ApiResponse<>("task not exist to be deleted",null);
-
-        }
+    public ResponseEntity<ApiResponse<Void>> deleteTask(@PathVariable Integer id) {
+            boolean deletedTask = taskService.deleteTask(id);
+            if (deletedTask) {
+                ApiResponse<Void> successResponse = new ApiResponse<>("Task deleted successfully", null, HttpStatus.OK);
+                return ResponseEntity.status(HttpStatus.OK).body(successResponse);
+            } else {
+                ApiResponse<Void> errorResponse = new ApiResponse<>("Task not found", null, HttpStatus.NOT_FOUND);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            }
     }
+
+
 
 }
