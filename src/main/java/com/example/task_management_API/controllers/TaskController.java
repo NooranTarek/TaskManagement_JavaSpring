@@ -1,6 +1,7 @@
 package com.example.task_management_API.controllers;
 
 import com.example.task_management_API.DTO.TaskDto;
+import com.example.task_management_API.DTO.UserDto;
 import com.example.task_management_API.Helpers.ApiResponse;
 import com.example.task_management_API.entities.Task;
 import com.example.task_management_API.entities.User;
@@ -45,71 +46,64 @@ public class TaskController {
         }
     }
 
-//    @PostMapping("")
-//    public ApiResponse<Task> createTask(
-//            @RequestBody Task task,
-//            @RequestHeader("Authorization") String token) {
-//        System.out.println("Received token: " + token);
-//
-//        try {
-//            token = token.replace("Bearer ", "");
-//            System.out.println("Processed token: " + token);
-//
-//            Integer userId = jwtUtil.extractUserId(token);
-//            System.out.println("Extracted userId: " + userId);
-//
-//            User userOfId = userService.findUserById(userId);
-//            task.setUser(userOfId);
-//
-//            Task savedTask = taskService.createTask(task);
-//            return new ApiResponse<>("Tasks added successfully", savedTask);
-//        } catch (Exception e) {
-//            throw new RuntimeException("Error processing token or task creation",e);
-//        }
-//    }
 
     @GetMapping("")
-    public ApiResponse<List<Task>> getAllTasks() {
-        List<Task> allTasks=taskService.getAllTasks();
-        return new ApiResponse<>("your tasks showed successfully",allTasks);
+    public ApiResponse<List<TaskDto>> getAllTasks() {
+        log.info("from get all");
+        List<TaskDto> allTasks = taskService.getAllTasks();
+        return new ApiResponse<>("your tasks showed successfully", allTasks);
 
     }
+
     @GetMapping("/userTasks")
     public ResponseEntity<ApiResponse<List<TaskDto>>> getUserTasks() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer userId = user.getId();
         System.out.println("from tasks");
-        List<TaskDto> allTasks=taskService.getUserTasks(userId);
-        ApiResponse<List<TaskDto>> response= new ApiResponse<>("your tasks showed successfully",allTasks,HttpStatus.OK);
+        List<TaskDto> allTasks = taskService.getUserTasks(userId);
+        ApiResponse<List<TaskDto>> response = new ApiResponse<>("your tasks showed successfully", allTasks, HttpStatus.OK);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<TaskDto>> updateSpesificTask(@PathVariable Integer id , @RequestBody Task task){
+    public ResponseEntity<ApiResponse<TaskDto>> updateSpesificTask(@PathVariable Integer id, @RequestBody Task task) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Task updatedTask=taskService.updateTask(id,task,user);
-        if(updatedTask!=null){
+        Task updatedTask = taskService.updateTask(id, task, user);
+        if (updatedTask != null) {
             TaskDto taskDto = new TaskDto(updatedTask);
-            ApiResponse<TaskDto> updateResponse=new ApiResponse<>("task updated successfully",taskDto,HttpStatus.OK);
+            ApiResponse<TaskDto> updateResponse = new ApiResponse<>("task updated successfully", taskDto, HttpStatus.OK);
             return ResponseEntity.status(HttpStatus.OK).body(updateResponse);
-        }
-        else {
-            ApiResponse<TaskDto> updateResponse=new ApiResponse<>("task not found to be updated",HttpStatus.NOT_FOUND);
+        } else {
+            ApiResponse<TaskDto> updateResponse = new ApiResponse<>("task not found to be updated", HttpStatus.NOT_FOUND);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(updateResponse);
         }
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteTask(@PathVariable Integer id) {
-            boolean deletedTask = taskService.deleteTask(id);
-            if (deletedTask) {
-                ApiResponse<Void> successResponse = new ApiResponse<>("Task deleted successfully", null, HttpStatus.OK);
-                return ResponseEntity.status(HttpStatus.OK).body(successResponse);
-            } else {
-                ApiResponse<Void> errorResponse = new ApiResponse<>("Task not found", null, HttpStatus.NOT_FOUND);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        boolean deletedTask = taskService.deleteTask(id);
+        if (deletedTask) {
+            ApiResponse<Void> successResponse = new ApiResponse<>("Task deleted successfully", null, HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.OK).body(successResponse);
+        } else {
+            ApiResponse<Void> errorResponse = new ApiResponse<>("Task not found", null, HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }}
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<TaskDto>> getSpesificTask (@PathVariable Integer id){
+        try {
+                Task foundTask = taskService.findTaskById(id);
+                TaskDto taskDto = new TaskDto(foundTask);
+                ApiResponse<TaskDto> taskExistResponse = new ApiResponse<>("task is found", taskDto, HttpStatus.OK);
+                return ResponseEntity.status(HttpStatus.OK).body(taskExistResponse);
+        } catch (RuntimeException e) {
+                ApiResponse<TaskDto> taskNotExistResponse = new ApiResponse<>("task not found", HttpStatus.NOT_FOUND);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(taskNotExistResponse);
+
             }
+        }
+
+
     }
-
-
-
-}

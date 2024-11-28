@@ -1,6 +1,7 @@
 package com.example.task_management_API.DTO;
 
 import com.example.task_management_API.entities.Task;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,10 @@ public class TaskDto {
     private Task.Periority periority;
     private Integer userId;
 
+    public TaskDto(){
+
+    }
+    @JsonIgnore
     public TaskDto(Task task) {
         this.id = task.getId();
         this.title = task.getTitle();

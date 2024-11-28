@@ -30,16 +30,14 @@ public class AuthConfigration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-                .cors().configurationSource(corsConfigurationSource())
-                .and()
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register", "/auth/login").permitAll()
                         .anyRequest().authenticated()
 
 
                 )
-
-              .addFilterBefore(new AuthMiddleware(jwtUtil, userService), UsernamePasswordAuthenticationFilter.class); // This is correct now.
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+              .addFilterBefore(new AuthMiddleware(jwtUtil, userService), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

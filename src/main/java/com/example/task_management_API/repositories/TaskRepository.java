@@ -14,5 +14,8 @@ public interface TaskRepository extends JpaRepository<Task,Integer> {
     @Query("DELETE FROM Task t where t.id=:id")
     int deleteTaskById(Integer id);
     List<Task> findByUserId (Integer id);
+    @Query("SELECT t FROM Task t LEFT JOIN FETCH t.user")
+    List<Task> findAllTasks();
+
 
 }
