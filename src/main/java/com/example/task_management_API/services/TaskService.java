@@ -7,6 +7,8 @@ import com.example.task_management_API.entities.User;
 import com.example.task_management_API.repositories.TaskRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -76,10 +78,10 @@ public class TaskService {
 //        return false;
 //    }
 
-    public List<TaskDto> getUserTasks(Integer id){
-        List<Task> tasks=taskRepository.findByUserId(id);
-        return tasks.stream().map(TaskDto::new).collect(Collectors.toList());
-
+    public Page<TaskDto> getUserTasks(Integer id, Pageable pageable) {
+        Page<Task> tasksPage = taskRepository.findByUserId(id, pageable);
+        return tasksPage.map(task -> new TaskDto(task));
+    }
     }
 
-}
+

@@ -1,7 +1,6 @@
 package com.example.task_management_API.controllers;
 
 import com.example.task_management_API.DTO.TaskDto;
-import com.example.task_management_API.DTO.UserDto;
 import com.example.task_management_API.Helpers.ApiResponse;
 import com.example.task_management_API.entities.Task;
 import com.example.task_management_API.entities.User;
@@ -10,6 +9,9 @@ import com.example.task_management_API.services.UserService;
 import com.example.task_management_API.utilities.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,12 +58,14 @@ public class TaskController {
     }
 
     @GetMapping("/userTasks")
-    public ResponseEntity<ApiResponse<List<TaskDto>>> getUserTasks() {
+    public ResponseEntity<ApiResponse<Page<TaskDto>>> getUserTasks(
+            @RequestParam (value = "page" ,defaultValue = "0") int page,
+            @RequestParam (value = "size" , defaultValue = "3") int size) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Integer userId = user.getId();
-        System.out.println("from tasks");
-        List<TaskDto> allTasks = taskService.getUserTasks(userId);
-        ApiResponse<List<TaskDto>> response = new ApiResponse<>("your tasks showed successfully", allTasks, HttpStatus.OK);
+        Pageable pageable= PageRequest.of(page,size);
+        Page<TaskDto> paginatedTasks = taskService.getUserTasks(userId,pageable);
+        ApiResponse<Page<TaskDto>> response = new ApiResponse<>("your tasks showed successfully", paginatedTasks, HttpStatus.OK);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
