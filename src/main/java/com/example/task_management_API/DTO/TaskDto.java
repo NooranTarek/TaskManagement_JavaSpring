@@ -16,6 +16,7 @@ public class TaskDto {
     private Task.Status status;
     private Task.Periority periority;
     private Integer userId;
+    private String userName;
 
     public TaskDto(){
 
@@ -29,5 +30,7 @@ public class TaskDto {
         this.status = task.getStatus();
         this.periority = task.getPeriority();
         this.userId = task.getUser() != null ? task.getUser().getId() : null;
+        this.userName = task.getUser() != null ? task.getUser().getUsername() : null;
+
     }
 }

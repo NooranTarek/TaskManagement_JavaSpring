@@ -10,6 +10,7 @@ import java.util.List;
 public interface TaskMapper {
 
     @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "user.username", target = "userName")
     TaskDto taskToTaskDto(Task task);
 
     List<TaskDto> tasksToTaskDtos(List<Task> tasks);

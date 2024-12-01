@@ -1,16 +1,16 @@
 package com.example.task_management_API.controllers;
 
+import com.example.task_management_API.DTO.TaskDto;
 import com.example.task_management_API.DTO.UserDto;
 import com.example.task_management_API.Helpers.ApiResponse;
+import com.example.task_management_API.entities.Task;
 import com.example.task_management_API.entities.User;
 import com.example.task_management_API.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -33,4 +33,14 @@ public class UserController {
 
 
     }
+    @GetMapping("")
+    public ResponseEntity<ApiResponse<String>> getUserName() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = user.getUsername();
+            ApiResponse<String> nameResponse = new ApiResponse<>("username found",userName, HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.OK).body(nameResponse);
+    }
+    //delete user
+    //show all tasks
+
 }
