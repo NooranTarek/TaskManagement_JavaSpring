@@ -13,7 +13,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -60,5 +62,11 @@ public class UserService {
         return allUsers.map(user -> new UserDto(user));
 
     }
+//public List<UserDto> getAllUsers() {
+//    List<User> allUsers = userRepository.findAll();
+//    return allUsers.stream()
+//            .map(user -> new UserDto(user))
+//            .collect(Collectors.toList());
+//}
 
 }

@@ -34,10 +34,18 @@ public class TaskService {
     }
     public Page<TaskDto> getAllTasks (Pageable pageable){
         Page<Task> tasks=taskRepository.findAll(pageable);
-        List<TaskDto> taskDtos = taskMapper.tasksToTaskDtos(tasks.getContent());
-//        return tasks.map(task -> new TaskDto(task));
-        return new PageImpl<>(taskDtos, pageable, tasks.getTotalElements());
+        return tasks.map(task -> new TaskDto(task));
+//        List<TaskDto> taskDtos = taskMapper.tasksToTaskDtos(tasks.getContent());
+//        return new PageImpl<>(taskDtos, pageable, tasks.getTotalElements());
     }
+
+
+//public List<TaskDto> getAllTasks() {
+//    List<Task> tasks = taskRepository.findAll();
+//    return tasks.stream()
+//            .map(task -> new TaskDto(task))
+//            .collect(Collectors.toList());
+//}
     public Task updateTask(Integer id, Task task, User user){
         if (taskRepository.existsById(id)) {
             task.setId(id);

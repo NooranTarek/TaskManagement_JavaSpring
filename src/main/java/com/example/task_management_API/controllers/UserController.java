@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/users")
@@ -53,6 +55,11 @@ public class UserController {
         ApiResponse<Page<UserDto>> successResponse=new ApiResponse<>("users showed successfully",allUsers,HttpStatus.OK);
         return ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }
-
+//    @GetMapping("")
+//    public ResponseEntity<ApiResponse<List<UserDto>>> getAllUsers(){
+//        List <UserDto> allUsers=userService.getAllUsers();
+//        ApiResponse<List<UserDto>> successResponse=new ApiResponse<>("users showed successfully",allUsers,HttpStatus.OK);
+//        return ResponseEntity.status(HttpStatus.OK).body(successResponse);
+//    }
 
 }

@@ -16,6 +16,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import javax.servlet.http.HttpServletResponse;
+
 @Configuration
 @EnableWebSecurity
 public class AuthConfigration {
@@ -32,12 +34,21 @@ public class AuthConfigration {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register", "/auth/login").permitAll()
+                        .requestMatchers("/users").hasRole("admin")
+                        .requestMatchers("/users/{id}").hasRole("admin")
+                        .requestMatchers("/tasks").hasRole("admin")
                         .anyRequest().authenticated()
 
 
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-              .addFilterBefore(new AuthMiddleware(jwtUtil, userService), UsernamePasswordAuthenticationFilter.class);
+              .addFilterBefore(new AuthMiddleware(jwtUtil, userService), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exceptions -> exceptions
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"status\": 403, \"message\": \"Forbidden: You do not have permission.\"}");                        })
+                );
         return http.build();
     }
 

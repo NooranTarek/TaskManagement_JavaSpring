@@ -13,11 +13,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
+
 @Slf4j
 public class AuthMiddleware extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
@@ -48,7 +51,6 @@ public class AuthMiddleware extends OncePerRequestFilter {
         token = token.replace("Bearer ", "");
         try {
             boolean tokenExpired = jwtUtil.validateToken(token, jwtUtil.extractUserName(token));
-//            logger.info("Token is valid: " + tokenExpired);
         } catch (Exception e) {
             ApiResponse<String> apiResponse = new ApiResponse<>("Token EXPIRED", HttpStatus.BAD_REQUEST);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -57,17 +59,12 @@ public class AuthMiddleware extends OncePerRequestFilter {
             return;
         }
         Integer userId = jwtUtil.extractUserId(token);
-        //logger.info(userId);
         if (userId != null) {
             User user = userService.findUserById(userId);
-//            logger.info(user);
             if (user != null) {
-//                logger.info("User found: " + user.getUsername());
                 var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-//                logger.info(authentication);
                 if (authentication != null) {
                     User userr = (User) authentication.getPrincipal();
-//                    logger.info("user in task: " + userr);
                 }
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);

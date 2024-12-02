@@ -59,6 +59,12 @@ public class TaskController {
         return new ApiResponse<>("your tasks showed successfully", allTasks);
 
     }
+//    @GetMapping("")
+//    public ResponseEntity<ApiResponse<List<TaskDto>>> getAllTasks(){
+//        List <TaskDto> allTasks=taskService.getAllTasks();
+//        ApiResponse<List<TaskDto>> successResponse=new ApiResponse<>("users showed successfully",allTasks,HttpStatus.OK);
+//        return ResponseEntity.status(HttpStatus.OK).body(successResponse);
+//    }
 
     @GetMapping("/userTasks")
     public ResponseEntity<ApiResponse<Page<TaskDto>>> getUserTasks(
