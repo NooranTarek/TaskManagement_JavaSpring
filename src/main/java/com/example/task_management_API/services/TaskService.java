@@ -35,6 +35,7 @@ public class TaskService {
     public Page<TaskDto> getAllTasks (Pageable pageable){
         Page<Task> tasks=taskRepository.findAll(pageable);
         List<TaskDto> taskDtos = taskMapper.tasksToTaskDtos(tasks.getContent());
+//        return tasks.map(task -> new TaskDto(task));
         return new PageImpl<>(taskDtos, pageable, tasks.getTotalElements());
     }
     public Task updateTask(Integer id, Task task, User user){

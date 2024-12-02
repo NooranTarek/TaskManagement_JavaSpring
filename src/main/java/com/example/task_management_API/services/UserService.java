@@ -1,10 +1,14 @@
 package com.example.task_management_API.services;
 
+import com.example.task_management_API.DTO.TaskDto;
+import com.example.task_management_API.DTO.UserDto;
 import com.example.task_management_API.entities.User;
 import com.example.task_management_API.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,6 +45,20 @@ public class UserService {
     public User findUserById(Integer userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+    }
+    public boolean deleteUser (Integer userId){
+        if(userRepository.existsById(userId)){
+            userRepository.deleteById(userId);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    public Page<UserDto> getAllUsers(Pageable pageable){
+        Page <User> allUsers=userRepository.findAll(pageable);
+        return allUsers.map(user -> new UserDto(user));
+
     }
 
 }

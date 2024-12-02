@@ -98,19 +98,19 @@ public class TaskController {
         }}
 
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<TaskDto>> getSpesificTask (@PathVariable Integer id){
-        try {
-                Task foundTask = taskService.findTaskById(id);
-                TaskDto taskDto = new TaskDto(foundTask);
-                ApiResponse<TaskDto> taskExistResponse = new ApiResponse<>("task is found", taskDto, HttpStatus.OK);
-                return ResponseEntity.status(HttpStatus.OK).body(taskExistResponse);
-        } catch (RuntimeException e) {
-                ApiResponse<TaskDto> taskNotExistResponse = new ApiResponse<>("task not found", HttpStatus.NOT_FOUND);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(taskNotExistResponse);
-
-            }
-        }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<ApiResponse<TaskDto>> getSpesificTask (@PathVariable Integer id){
+//        try {
+//                Task foundTask = taskService.findTaskById(id);
+//                TaskDto taskDto = new TaskDto(foundTask);
+//                ApiResponse<TaskDto> taskExistResponse = new ApiResponse<>("task is found", taskDto, HttpStatus.OK);
+//                return ResponseEntity.status(HttpStatus.OK).body(taskExistResponse);
+//        } catch (RuntimeException e) {
+//                ApiResponse<TaskDto> taskNotExistResponse = new ApiResponse<>("task not found", HttpStatus.NOT_FOUND);
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(taskNotExistResponse);
+//
+//            }
+//        }
 
 
     }
