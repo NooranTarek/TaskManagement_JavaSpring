@@ -8,6 +8,7 @@ import com.example.task_management_API.repositories.TaskRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -28,27 +29,13 @@ public class TaskService {
                 .orElseThrow(() -> new RuntimeException("Task not found with ID: " + id));
     }
     public Task createTask (Task task){
+
         return taskRepository.save(task);
     }
-//    public List<TaskDto> getAllTasks(){
-//        List<Task> allTasks=taskRepository.findAllTasks();
-//        return allTasks.stream().map(TaskDto::new).collect(Collectors.toList());
-//    }
-    public List<TaskDto> getAllTasks (){
-        log.info("before getting the tasks");
-        List<Task> tasks=taskRepository.findAll();
-        if (tasks == null) {
-            log.info("tasks list is null!");
-        }
-        if (tasks.contains(null)) {
-           log.info("list contains null");
-        }
-        tasks.forEach(task -> {
-            if (task.getUser() == null) {
-                log.info("no user assigned.");
-            }
-        });
-        return taskMapper.tasksToTaskDtos(tasks);
+    public Page<TaskDto> getAllTasks (Pageable pageable){
+        Page<Task> tasks=taskRepository.findAll(pageable);
+        List<TaskDto> taskDtos = taskMapper.tasksToTaskDtos(tasks.getContent());
+        return new PageImpl<>(taskDtos, pageable, tasks.getTotalElements());
     }
     public Task updateTask(Integer id, Task task, User user){
         if (taskRepository.existsById(id)) {
@@ -63,20 +50,6 @@ public class TaskService {
         return  deletedTasks>0;
         }
 
-//    public boolean deleteTask(Integer id) {
-//        if (taskRepository.existsById(id)) {
-//            System.out.println("delete task with id " + id);
-//            taskRepository.deleteById(id);
-//            if (!taskRepository.existsById(id)) {
-//                System.out.println("Task successfully deleted");
-//                return true;
-//            } else {
-//                System.out.println("Failed to delete task");
-//                return false;
-//            }
-//        }
-//        return false;
-//    }
 
     public Page<TaskDto> getUserTasks(Integer id, Pageable pageable) {
         Page<Task> tasksPage = taskRepository.findByUserId(id, pageable);

@@ -50,9 +50,12 @@ public class TaskController {
 
 
     @GetMapping("")
-    public ApiResponse<List<TaskDto>> getAllTasks() {
-        log.info("from get all");
-        List<TaskDto> allTasks = taskService.getAllTasks();
+    public ApiResponse<Page<TaskDto>> getAllTasks(
+            @RequestParam (value = "page" ,defaultValue = "0") int page,
+            @RequestParam (value = "size" , defaultValue = "3") int size) {
+//        log.info("from get all");
+        Pageable pageable=PageRequest.of(page,size);
+        Page<TaskDto> allTasks = taskService.getAllTasks(pageable);
         return new ApiResponse<>("your tasks showed successfully", allTasks);
 
     }
