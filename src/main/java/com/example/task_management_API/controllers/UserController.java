@@ -16,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -25,14 +27,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
-    @GetMapping("/userName")
-    public ResponseEntity<ApiResponse<String>> getUserName() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String userName = user.getUsername();
-        ApiResponse<String> nameResponse = new ApiResponse<>("username found",userName, HttpStatus.OK);
-        return ResponseEntity.status(HttpStatus.OK).body(nameResponse);
-    }
     //delete user
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable Integer id){
