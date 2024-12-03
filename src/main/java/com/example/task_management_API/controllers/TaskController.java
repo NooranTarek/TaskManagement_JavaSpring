@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -52,9 +53,11 @@ public class TaskController {
     @GetMapping("")
     public ApiResponse<Page<TaskDto>> getAllTasks(
             @RequestParam (value = "page" ,defaultValue = "0") int page,
-            @RequestParam (value = "size" , defaultValue = "3") int size) {
+            @RequestParam (value = "size" , defaultValue = "3") int size,
+            @RequestParam (value = "field" , defaultValue = "dueDate") String field
+            ) {
 //        log.info("from get all");
-        Pageable pageable=PageRequest.of(page,size);
+        Pageable pageable=PageRequest.of(page,size, Sort.by(field).ascending());
         Page<TaskDto> allTasks = taskService.getAllTasks(pageable);
         return new ApiResponse<>("your tasks showed successfully", allTasks);
 
