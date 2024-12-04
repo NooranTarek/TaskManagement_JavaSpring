@@ -18,6 +18,9 @@ public interface TaskRepository extends JpaRepository<Task,Integer> {
     Page<Task> findByUserId (Integer id , Pageable pageable);
     @Query("SELECT t FROM Task t LEFT JOIN FETCH t.user")
     List<Task> findAllTasks();
-
+    @Modifying
+    @Transactional
+    @Query("UPDATE Task t SET t.status=:status WHERE t.id=:id")
+    int updateTaskStatus(Integer id, Task.Status status);
 
 }

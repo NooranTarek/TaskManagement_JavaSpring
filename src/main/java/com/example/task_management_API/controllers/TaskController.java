@@ -62,13 +62,8 @@ public class TaskController {
         return new ApiResponse<>("your tasks showed successfully", allTasks);
 
     }
-//    @GetMapping("")
-//    public ResponseEntity<ApiResponse<List<TaskDto>>> getAllTasks(){
-//        List <TaskDto> allTasks=taskService.getAllTasks();
-//        ApiResponse<List<TaskDto>> successResponse=new ApiResponse<>("users showed successfully",allTasks,HttpStatus.OK);
-//        return ResponseEntity.status(HttpStatus.OK).body(successResponse);
-//    }
 
+//_______________________________user tesks (admin,user)_______________________________
     @GetMapping("/userTasks")
     public ResponseEntity<ApiResponse<Page<TaskDto>>> getUserTasks(
             @RequestParam (value = "page" ,defaultValue = "0") int page,
@@ -94,6 +89,18 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(updateResponse);
         }
     }
+    @PutMapping("/updateStatus/{id}")
+    public ResponseEntity<ApiResponse<Void>> updateTaskStatus(@PathVariable Integer id,
+                                                              @RequestParam (value = "status") String status  )  {
+        boolean statusIsUpdated= taskService.updateStatus(id,status);
+        if(statusIsUpdated){
+            ApiResponse<Void> successResponse = new ApiResponse<>("Task status is updated successfully", null, HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.OK).body(successResponse);
+        }
+        ApiResponse<Void> successResponse = new ApiResponse<>("Task status is not updated", null, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(successResponse);
+
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteTask(@PathVariable Integer id) {
@@ -107,19 +114,6 @@ public class TaskController {
         }}
 
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<ApiResponse<TaskDto>> getSpesificTask (@PathVariable Integer id){
-//        try {
-//                Task foundTask = taskService.findTaskById(id);
-//                TaskDto taskDto = new TaskDto(foundTask);
-//                ApiResponse<TaskDto> taskExistResponse = new ApiResponse<>("task is found", taskDto, HttpStatus.OK);
-//                return ResponseEntity.status(HttpStatus.OK).body(taskExistResponse);
-//        } catch (RuntimeException e) {
-//                ApiResponse<TaskDto> taskNotExistResponse = new ApiResponse<>("task not found", HttpStatus.NOT_FOUND);
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(taskNotExistResponse);
-//
-//            }
-//        }
 
 
     }

@@ -54,6 +54,14 @@ public class TaskService {
         }
         return null;
     }
+    public boolean updateStatus(Integer id, String statusString){
+        Task.Status status = Task.Status.valueOf(statusString);
+        int updatedTask = taskRepository.updateTaskStatus(id, status);
+        if(updatedTask>0){
+            return true;
+        }
+        return false;
+    }
         public boolean deleteTask(Integer id) {
         Integer deletedTasks= taskRepository.deleteTaskById(id);
         return  deletedTasks>0;
