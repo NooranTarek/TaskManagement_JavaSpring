@@ -52,8 +52,8 @@ public class AuthMiddleware extends OncePerRequestFilter {
         try {
             boolean tokenExpired = jwtUtil.validateToken(token, jwtUtil.extractUserName(token));
         } catch (Exception e) {
-            ApiResponse<String> apiResponse = new ApiResponse<>("Token EXPIRED", HttpStatus.BAD_REQUEST);
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            ApiResponse<String> apiResponse = new ApiResponse<>("Token EXPIRED", HttpStatus.UNAUTHORIZED);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.getWriter().write(new ObjectMapper().writeValueAsString(apiResponse));
             return;

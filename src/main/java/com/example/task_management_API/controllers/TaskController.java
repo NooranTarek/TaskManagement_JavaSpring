@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -34,7 +36,10 @@ public class TaskController {
 
     @PostMapping("")
     public ResponseEntity<ApiResponse<TaskDto>> createTask(@RequestBody Task task) {
-        try {
+        if(task.getDueDate().isBefore((LocalDate.now()))){
+            ApiResponse<TaskDto> invalidDateRes=new ApiResponse<>("due date have to be equal to or greater than today",HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(invalidDateRes);
+        }
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             System.out.println("user in task: " + user);
             task.setUser(user);
@@ -42,11 +47,7 @@ public class TaskController {
             TaskDto taskDto = new TaskDto(savedTask);
             ApiResponse<TaskDto> successResponse = new ApiResponse<>("task added successfully", taskDto, HttpStatus.CREATED);
             return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
-        } catch (RuntimeException e) {
-            System.out.println("error");
-            ApiResponse<TaskDto> errorResponse = new ApiResponse<>(e.getMessage(), HttpStatus.NOT_FOUND);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-        }
+
     }
 
 

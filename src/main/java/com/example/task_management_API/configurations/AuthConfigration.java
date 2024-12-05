@@ -38,7 +38,7 @@ public class AuthConfigration {
                         .requestMatchers("/users").hasRole("admin")
                         .requestMatchers("/users/{id}").hasRole("admin")
                         .requestMatchers("/tasks/**").hasAnyRole("user", "admin")
-                        .requestMatchers("/tasks").hasRole("admin")
+//                        .requestMatchers("/tasks").hasRole("admin")
                         .anyRequest().authenticated()
 
 
