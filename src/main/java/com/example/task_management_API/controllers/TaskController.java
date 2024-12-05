@@ -51,7 +51,7 @@ public class TaskController {
     }
 
 
-    @GetMapping("")
+    @GetMapping("/admin")
     public ApiResponse<Page<TaskDto>> getAllTasks(
             @RequestParam (value = "page" ,defaultValue = "0") int page,
             @RequestParam (value = "size" , defaultValue = "3") int size,
@@ -62,6 +62,24 @@ public class TaskController {
         Page<TaskDto> allTasks = taskService.getAllTasks(pageable);
         return new ApiResponse<>("your tasks showed successfully", allTasks);
 
+    }
+
+    @GetMapping("/userTasks/check")
+    public ApiResponse<Page<TaskDto>> checkDate(
+            @RequestParam (value = "page" ,defaultValue = "0") int page,
+            @RequestParam (value = "size" , defaultValue = "3") int size,
+            @RequestParam (value = "field" , defaultValue = "dueDate") String field
+    ) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer userId = user.getId();
+        Pageable pageable= PageRequest.of(page,size);
+        Page<TaskDto> paginatedTasks = taskService.getUserTasks(userId,pageable);
+        boolean hasExpiredTasks = paginatedTasks.stream()
+                .anyMatch(taskDto -> taskDto.getDueDate().isBefore(LocalDate.now()));
+        String message = hasExpiredTasks
+                ? "there are tasks with due dates in the past. Please update their status or dates."
+                : null;
+        return new ApiResponse<>(message, HttpStatus.OK);
     }
 
 //_______________________________user tesks (admin,user)_______________________________

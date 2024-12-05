@@ -34,11 +34,9 @@ public class AuthConfigration {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register", "/auth/login").permitAll()
-                        .requestMatchers("/users/userName").hasAnyRole("user", "admin")
                         .requestMatchers("/users").hasRole("admin")
-                        .requestMatchers("/users/{id}").hasRole("admin")
                         .requestMatchers("/tasks/**").hasAnyRole("user", "admin")
-//                        .requestMatchers("/tasks").hasRole("admin")
+                        .requestMatchers("/tasks/admin").hasRole("admin")
                         .anyRequest().authenticated()
 
 
